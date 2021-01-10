@@ -41,11 +41,13 @@ import time
 import RPi.GPIO as GPIO
 
 
+
 def band_pass_filter(original_signal, order, fc1, fc2, fs):
     b, a = signal.butter(
         N=order, Wn=[2 * fc1 / fs, 2 * fc2 / fs], btype='bandpass')
     new_signal = signal.lfilter(b, a, original_signal)
     return new_signal
+
 
 
 def plot_signal(audio_data, title=None):
@@ -79,13 +81,14 @@ GPIO.setup(KEY1_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(KEY2_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(KEY3_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+
 show_image(im_welcome)
 
 print('begin')
 dataset = np.ones((1, 256, 256, 1))
 dataset = dataset.astype('float32')
 while 1:
-
+    
     # If you press key1 and then you pull up
     if not GPIO.input(KEY_PRESS_PIN):
         show_image(im_welcome)
@@ -106,12 +109,13 @@ while 1:
         im = Image.open('/home/pi/Desktop/material/hs_data/hs_img.jpg')
         show_image(im)
 
+        
         freq1, fre2, bi_spectrum = polycoherence(
             down_sample_audio_data[-2500:], nfft=1024, fs=1000, norm=None, nperseg=256)
         bi_spectrum = np.array(abs(bi_spectrum))  # calculate bi_spectrum
         bi_spectrum = bi_spectrum.reshape((256, 256, 1))
         bi_spectrum = 255 * (bi_spectrum - np.min(bi_spectrum)) / \
-                      (np.max(bi_spectrum) - np.min(bi_spectrum))
+            (np.max(bi_spectrum) - np.min(bi_spectrum))
         dataset = np.vstack((dataset, np.array([bi_spectrum])))
         dataset = np.delete(dataset, 0, 0)
         dataset = dataset.astype('float32')
