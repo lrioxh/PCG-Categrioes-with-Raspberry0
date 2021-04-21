@@ -25,7 +25,7 @@ def shuffle_data_label(data, label):
 
 def generate_label(num=200):
     label = []
-    for j in range(2):
+    for j in range(4):
         for i in range(num):
             label.append(j)
     return np.array(label)
